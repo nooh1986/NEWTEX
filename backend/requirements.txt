@@ -1,0 +1,12 @@
+Flask==2.3.2
+Flask-CORS==4.0.0
+Flask-SQLAlchemy==3.0.5
+SQLAlchemy==2.0.19
+python-dotenv==1.0.0
+requests==2.31.0
+# SQL Server drivers
+pyodbc==4.0.39
+pymssql==2.2.8
+# MySQL drivers (optional)
+mysql-connector-python==8.1.0
+pymysql==1.1.0
