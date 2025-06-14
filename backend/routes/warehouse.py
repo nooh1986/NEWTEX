@@ -165,28 +165,38 @@ def get_warehouse_summary():
 
 @warehouse_bp.route('/sales/summary', methods=['GET'])
 def get_sales_summary():
-    """Get sales summary with support for different time periods"""
+    """Get sales summary with support for different time periods and custom dates"""
     try:
         db = current_app.extensions['sqlalchemy']
-        period = request.args.get('period', 'last_month')        # Define date ranges based on period
+        period = request.args.get('period', 'last_month')
+        custom_start_date = request.args.get('start_date')
+        custom_end_date = request.args.get('end_date')
+        
+        # Define date ranges based on period or use custom dates
         from datetime import datetime, timedelta
         
-        if period == 'yesterday':
-            start_date = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
-            end_date = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
-        elif period == 'last_week' or period == 'week':
-            start_date = (datetime.now() - timedelta(weeks=1)).strftime('%Y-%m-%d')
-            end_date = datetime.now().strftime('%Y-%m-%d')
-        elif period == 'last_month' or period == 'month':
-            start_date = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
-            end_date = datetime.now().strftime('%Y-%m-%d')
-        elif period == 'last_3_months':
-            start_date = (datetime.now() - timedelta(days=90)).strftime('%Y-%m-%d')
-            end_date = datetime.now().strftime('%Y-%m-%d')
+        # Use custom dates if provided, otherwise use period
+        if custom_start_date and custom_end_date:
+            start_date = custom_start_date
+            end_date = custom_end_date
+            print(f"Sales Summary - Using custom dates: Start: {start_date}, End: {end_date}")
         else:
-            start_date = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
-            end_date = datetime.now().strftime('%Y-%m-%d')
-        print(f"Sales Summary - Period: {period}, Start: {start_date}, End: {end_date}")
+            if period == 'yesterday':
+                start_date = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
+                end_date = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
+            elif period == 'last_week' or period == 'week':
+                start_date = (datetime.now() - timedelta(weeks=1)).strftime('%Y-%m-%d')
+                end_date = datetime.now().strftime('%Y-%m-%d')
+            elif period == 'last_month' or period == 'month':
+                start_date = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
+                end_date = datetime.now().strftime('%Y-%m-%d')
+            elif period == 'last_3_months':
+                start_date = (datetime.now() - timedelta(days=90)).strftime('%Y-%m-%d')
+                end_date = datetime.now().strftime('%Y-%m-%d')
+            else:
+                start_date = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
+                end_date = datetime.now().strftime('%Y-%m-%d')
+            print(f"Sales Summary - Period: {period}, Start: {start_date}, End: {end_date}")
         
         # Debug: Check total records in date range without filters
         debug_query = text("""

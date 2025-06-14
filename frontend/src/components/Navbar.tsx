@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Menu, X, Home, Package, Warehouse, BarChart as ChartBar, ShoppingCart } from 'lucide-react';
+import { Menu, X, Home, Package, Warehouse, BarChart as ChartBar, ShoppingCart, LogOut, User } from 'lucide-react';
 import { Menu as HeadlessMenu } from '@headlessui/react';
+import { useAuth } from '../contexts/AuthContext';
 
 interface NavbarProps {
   onPageChange: (page: string) => void;
@@ -12,6 +13,12 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ onPageChange, onWarehouseChange, onPricingChange, onSalesChange, currentPage }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, logout, isLoading } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+    setIsOpen(false);
+  };
   const handleWarehouseClick = (type: string) => {
     onPageChange('warehouse');
     onWarehouseChange(type);
@@ -186,11 +193,32 @@ const Navbar: React.FC<NavbarProps> = ({ onPageChange, onWarehouseChange, onPric
                     <button
                       onClick={() => handleSalesClick('chinese')}
                       className={`${active ? 'bg-gray-100' : ''} block w-full text-right px-4 py-2 text-sm text-gray-700`}
-                    >
-                      مبيعات الصيني
+                    >                      مبيعات الصيني
                     </button>
                   )}
                 </HeadlessMenu.Item>              </HeadlessMenu.Items>
+            </HeadlessMenu>
+
+            {/* User Menu */}
+            <HeadlessMenu as="div" className="relative">
+              <HeadlessMenu.Button className="flex items-center text-gray-700 hover:text-orange-500 px-3 py-2 rounded-md text-sm font-medium">
+                <User className="ml-2 h-5 w-5" />
+                {user?.name || user?.username || 'المستخدم'}
+              </HeadlessMenu.Button>
+              <HeadlessMenu.Items className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                <HeadlessMenu.Item>
+                  {({ active }) => (
+                    <button
+                      onClick={handleLogout}
+                      disabled={isLoading}
+                      className={`${active ? 'bg-gray-100' : ''} ${isLoading ? 'opacity-50 cursor-not-allowed' : ''} block w-full text-right px-4 py-2 text-sm text-gray-700 flex items-center`}
+                    >
+                      <LogOut className="ml-2 h-4 w-4" />
+                      تسجيل الخروج
+                    </button>
+                  )}
+                </HeadlessMenu.Item>
+              </HeadlessMenu.Items>
             </HeadlessMenu>
           </div>
 
@@ -293,8 +321,23 @@ const Navbar: React.FC<NavbarProps> = ({ onPageChange, onWarehouseChange, onPric
                 onClick={() => handleSalesClick('chinese')}
                 className={`${getNavItemClasses('sales')} w-full text-right`}
               >
-                <ChartBar className="ml-2 h-5 w-5" />
-                مبيعات الصيني              </button>
+                <ChartBar className="ml-2 h-5 w-5" />                مبيعات الصيني              </button>
+            </div>
+
+            {/* User info and logout for mobile */}
+            <div className="border-t border-gray-200 pt-4 mt-4">
+              <div className="flex items-center px-4 py-2 text-sm text-gray-700">
+                <User className="ml-2 h-5 w-5" />
+                {user?.name || user?.username || 'المستخدم'}
+              </div>
+              <button
+                onClick={handleLogout}
+                disabled={isLoading}
+                className={`${isLoading ? 'opacity-50 cursor-not-allowed' : ''} flex items-center w-full text-right px-4 py-2 text-sm text-gray-700 hover:text-orange-500 hover:bg-gray-50`}
+              >
+                <LogOut className="ml-2 h-5 w-5" />
+                تسجيل الخروج
+              </button>
             </div>
           </div>
         </div>

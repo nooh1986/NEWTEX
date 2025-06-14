@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import Login from './components/auth/Login';
 import Navbar from './components/Navbar';
 import Dashboard from './components/Dashboard';
 import TasaneefPricing from './components/الاسعار/TasaneefPricing';
@@ -22,7 +24,33 @@ import ClassicSales from './components/المبيعات/ClassicSales';
 import ChineseSales from './components/المبيعات/ChineseSales';
 import OrderDetails from './components/الطلبيات/OrderDetails';
 
-function App() {
+// Main app content that needs authentication
+const AppContent = () => {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  // Show loading spinner while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">جاري التحميل...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show login page if not authenticated
+  if (!isAuthenticated) {
+    return <Login />;
+  }
+
+  // Main app content for authenticated users
+  return <AuthenticatedApp />;
+};
+
+// The authenticated app component
+const AuthenticatedApp = () => {
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [previousPage, setPreviousPage] = useState('dashboard');
   const [warehouseType, setWarehouseType] = useState('');
@@ -253,6 +281,15 @@ function App() {
       {currentPage === 'stats' && <Statistics />}
     </div>
   );
-}
+};
+
+// Main App component wrapped with AuthProvider
+const App = () => {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  );
+};
 
 export default App;
