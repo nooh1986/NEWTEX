@@ -19,7 +19,6 @@ import ChineseColorDetailsTable from './components/المستودعات/ChineseC
 import OrdersInProgressTable from './components/الطلبيات/OrdersInProgressTable';
 import LateOrdersTable from './components/الطلبيات/LateOrdersTable';
 import ReadyOrdersTable from './components/الطلبيات/ReadyOrdersTable';
-import Statistics from './components/Statistics';
 import ClassicSales from './components/المبيعات/ClassicSales';
 import ChineseSales from './components/المبيعات/ChineseSales';
 import OrderDetails from './components/الطلبيات/OrderDetails';
@@ -277,8 +276,6 @@ const AuthenticatedApp = () => {
       {currentPage === 'sales' && salesType === 'chinese' && (
         <ChineseSales initialFilterPeriod={salesFilterPeriod} />
       )}
-
-      {currentPage === 'stats' && <Statistics />}
     </div>
   );
 };

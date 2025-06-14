@@ -191,14 +191,10 @@ const Dashboard = ({ onPageChange, onWarehouseChange, onChineseSalesNavigation, 
         const chineseData = await chineseResponse.json();
         const chineseTotal = chineseData.success ? 
           chineseData.data.reduce((sum: number, item: ChineseWarehouseItem) => sum + (item.count || 0), 0) : 0;
-        const chineseTotalLength = chineseData.success ? 
-          chineseData.data.reduce((sum: number, item: ChineseWarehouseItem) => {
+        const chineseTotalLength = chineseData.success ?          chineseData.data.reduce((sum: number, item: ChineseWarehouseItem) => {
             const cleanedValue = item.total_long?.replace(/,/g, '') || '0';
             return sum + parseFloat(cleanedValue);
           }, 0) : 0;
-
-        console.log('Warehouse totals:', { classicTotal, scrapTotal, chineseTotal });
-        console.log('Warehouse lengths:', { classicTotalLength, scrapTotalLength, chineseTotalLength });
 
         setWarehouseData({
           classic: { total: classicTotal, totalLength: classicTotalLength, loading: false },
@@ -280,15 +276,10 @@ const Dashboard = ({ onPageChange, onWarehouseChange, onChineseSalesNavigation, 
         ]);
 
         setLast3MonthsData({
-          main: mainData.success ? mainData.data : [],
-          chinese: chineseData.success ? chineseData.data : [],
+          main: mainData.success ? mainData.data : [],          chinese: chineseData.success ? chineseData.data : [],
           loading: false
         });
 
-        console.log('📊 Last 3 months data loaded:', {
-          main: mainData.success ? mainData.data : [],
-          chinese: chineseData.success ? chineseData.data : []
-        });
       } catch (error) {
         console.error('Error fetching last 3 months data:', error);
         setLast3MonthsData(prev => ({ ...prev, loading: false }));
@@ -303,39 +294,21 @@ const Dashboard = ({ onPageChange, onWarehouseChange, onChineseSalesNavigation, 
   // Effect to refetch sales data when filter changes
   useEffect(() => {
     const fetchSalesData = async (period?: string) => {
-      try {
-        setSalesStatsLoading(true);
+      try {        setSalesStatsLoading(true);
         
         // Get the appropriate period parameter based on selected filter
         const selectedOption = filterOptions.find(opt => opt.key === selectedFilter);
         const apiPeriod = period || selectedOption?.period || 'last_month';
         
-        console.log('🔍 Filter changed:', selectedFilter);
-        console.log('🔍 Selected option:', selectedOption);
-        console.log('🔍 API Period:', apiPeriod);
-        
         // Fetch sales summary for selected period
         const summaryResponse = await fetch(`http://localhost:5000/api/warehouse/sales/summary?period=${apiPeriod}`);
         const summaryData = await summaryResponse.json();
-        
-        console.log('📊 Sales Summary API Response:', summaryData);
-        console.log('📊 Summary Data Details:', {
-          main: summaryData.data?.main,
-          chinese: summaryData.data?.chinese,
-          combined: summaryData.data?.combined
-        });
-        
-        // Fetch monthly sales data for charts
+          // Fetch monthly sales data for charts
         const mainMonthlyResponse = await fetch(`http://localhost:5000/api/warehouse/sales/main?period=${apiPeriod}`);
         const mainMonthlyData = await mainMonthlyResponse.json();
         
         const chineseMonthlyResponse = await fetch(`http://localhost:5000/api/warehouse/sales/chinese?period=${apiPeriod}`);
         const chineseMonthlyData = await chineseMonthlyResponse.json();
-
-        console.log('📈 Monthly API Responses:', {
-          main: mainMonthlyData,
-          chinese: chineseMonthlyData
-        });
 
         // Fetch top products and customer data for enhanced statistics
         const [mainTopProductsRes, chineseTopProductsRes, mainCustomersRes, chineseCustomersRes] = await Promise.all([
@@ -369,14 +342,7 @@ const Dashboard = ({ onPageChange, onWarehouseChange, onChineseSalesNavigation, 
             chinese: summary.chinese,
             combined: summary.combined,
             monthly: { main: mainMonthly, chinese: chineseMonthly },
-            loading: false
-          });
-
-          console.log('✅ Sales data updated with:', {
-            main: summary.main,
-            chinese: summary.chinese,
-            combined: summary.combined
-          });
+            loading: false          });
 
           // Set additional sales statistics
           setTopMainProducts(mainTopProducts.success ? mainTopProducts.data : []);

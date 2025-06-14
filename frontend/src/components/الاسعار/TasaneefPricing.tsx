@@ -39,11 +39,9 @@ const TasaneefPricing: React.FC<TasaneefPricingProps> = ({ title, onItemClick })
   useEffect(() => {
     fetchTasaneefData();
   }, []);
-  const fetchTasaneefData = async () => {
-    try {
+  const fetchTasaneefData = async () => {    try {
       setLoading(true);
       setError(null);
-      console.log('Fetching tasaneef data (using POST) from external API...');
       
       const response = await fetch('https://istanbul.almaestro.org/api/main_desan', {
         method: 'POST',
@@ -55,9 +53,7 @@ const TasaneefPricing: React.FC<TasaneefPricingProps> = ({ title, onItemClick })
       });
        
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-       
-      const data = await response.json();
-       console.log('API Response:', data);
+         const data = await response.json();
 
       // Transform returned array into TasaneefItem list
       // API returns object with `data.main_desans` array
@@ -70,7 +66,6 @@ const TasaneefPricing: React.FC<TasaneefPricingProps> = ({ title, onItemClick })
            description: `وصف تفصيلي لتصنيف ${item.name || (index + 1)}`
          })));
          setError(null);
-         console.log('Successfully loaded', transformedData.length, 'tasaneef items');
        } else {
          throw new Error('No tasaneef data received');
        }
@@ -103,10 +98,7 @@ const TasaneefPricing: React.FC<TasaneefPricingProps> = ({ title, onItemClick })
     setSelectedTasaneef(itemName);
     setModalData(null);
     setModalError(null);
-    setModalLoading(true);
-
-    try {
-      console.log('Fetching tasaneef details for:', itemName);
+    setModalLoading(true);    try {
       const response = await fetch(`http://localhost:5000/api/warehouse/tasaneef-details-proxy/${encodeURIComponent(itemName)}`, {
         method: 'POST',
         headers: {
@@ -118,10 +110,7 @@ const TasaneefPricing: React.FC<TasaneefPricingProps> = ({ title, onItemClick })
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log('Tasaneef Details API Response:', data);
+      }      const data = await response.json();
       setModalData(data);
     } catch (err) {
       console.error('Error fetching tasaneef details:', err);

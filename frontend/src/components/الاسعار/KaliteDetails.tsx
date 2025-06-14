@@ -22,10 +22,8 @@ const KaliteDetails: React.FC<KaliteDetailsProps> = ({ mainDesan, onBack }) => {
   const [modalData, setModalData] = useState<Record<string, unknown> | null>(null);
   const [modalLoading, setModalLoading] = useState(false);
   const [modalError, setModalError] = useState<string | null>(null);
-
   const fetchKaliteData = useCallback(async () => {
     if (isFetchingRef.current) {
-      console.log('Request already in progress, skipping...');
       return;
     }
     try {
@@ -33,7 +31,6 @@ const KaliteDetails: React.FC<KaliteDetailsProps> = ({ mainDesan, onBack }) => {
       setLoading(true);
       setError(null);
 
-      console.log('Fetching quality data from external API...');
       const response = await fetch(
         `https://istanbul.almaestro.org/api/kalite/${encodeURIComponent(mainDesan)}`,
         {

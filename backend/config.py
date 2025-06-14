@@ -4,13 +4,19 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Config:
-    # Database Configuration - SQL Server
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'mssql+pyodbc://almaestr_classic:Nooh1986.@104.247.167.18\\MSSQLSERVER2014/almaestr_classic?driver=ODBC+Driver+17+for+SQL+Server&MultipleActiveResultSets=True'
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    # Database Configuration - SQL Server (using pyodbc)
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'mssql+pyodbc://almaestr_classic:Nooh1986.@104.247.167.18\\MSSQLSERVER2014/almaestr_classic?driver=ODBC+Driver+17+for+SQL+Server&TrustServerCertificate=yes&MultipleActiveResultSets=True'
     
-    # Alternative connection strings for different drivers:
-    # For pymssql: 'mssql+pymssql://almaestr_classic:Nooh1986.@104.247.167.18:1433/almaestr_classic'
-    # For pyodbc: 'mssql+pyodbc://almaestr_classic:Nooh1986.@104.247.167.18\\MSSQLSERVER2014/almaestr_classic?driver=ODBC+Driver+17+for+SQL+Server'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ECHO = False  # Disable SQL query logging in console
+    
+    # Connection pool settings for better reliability
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        'pool_pre_ping': True,
+        'pool_recycle': 300,
+        'pool_timeout': 20,
+        'max_overflow': 0
+    }
     
     # Security
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-in-production'
@@ -26,7 +32,10 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'mssql+pyodbc://almaestr_classic:Nooh1986.@104.247.167.18\\MSSQLSERVER2014/almaestr_classic?driver=ODBC+Driver+17+for+SQL+Server&MultipleActiveResultSets=True'
+    # Using the same working pyodbc configuration
+    SQLALCHEMY_DATABASE_URI = 'mssql+pyodbc://almaestr_classic:Nooh1986.@104.247.167.18\\MSSQLSERVER2014/almaestr_classic?driver=ODBC+Driver+17+for+SQL+Server&TrustServerCertificate=yes&MultipleActiveResultSets=True'
+    # Keep SQL logging disabled even in development for cleaner console
+    SQLALCHEMY_ECHO = False
 
 class ProductionConfig(Config):
     DEBUG = False

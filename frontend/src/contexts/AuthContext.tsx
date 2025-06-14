@@ -63,8 +63,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       setIsLoading(true);
       
-      console.log('Attempting login with:', { name: username, rememberMe }); // Debug log
-        const response = await fetch('https://istanbul.almaestro.org/api/login', {
+      const response = await fetch('https://istanbul.almaestro.org/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -73,11 +72,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           name: username,
           password,
         }),
-      });      console.log('Login response status:', response.status); // Debug log
+      });
       
       if (response.ok) {
         const data = await response.json();
-        console.log('Login response data:', data); // Debug log
         
         // Create user object (adjust based on actual API response)
         const userData: User = {

@@ -24,14 +24,12 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-
-    if (!username || !password) {
+    setError('');    if (!username || !password) {
       setError('يرجى إدخال الاسم وكلمة المرور');
       return;
-    }    console.log('Login attempt:', { username, rememberMe }); // Debug log
+    }
+    
     const success = await login(username, password, rememberMe);
-    console.log('Login result:', success); // Debug log
     
     if (success) {
       // Save username if remember me is checked
