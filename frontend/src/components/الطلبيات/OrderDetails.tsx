@@ -165,7 +165,8 @@ const OrderDetails: React.FC<{ orderNumber: string; onBack: () => void }> = ({ o
           <h3 className="text-lg sm:text-xl font-bold text-gray-800">تفاصيل الاتواب</h3>
         </div>
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-gray-200"> 
+            <thead className="bg-gray-50">
               <tr>
                 <th className="px-2 sm:px-4 py-2 sm:py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">رقم التوب</th>
                 <th className="px-2 sm:px-4 py-2 sm:py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الدسان</th>

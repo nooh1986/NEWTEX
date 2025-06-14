@@ -1565,3 +1565,67 @@ def get_ready_orders():
     except Exception as e:
         print(f"Error in get_ready_orders: {str(e)}")
         return jsonify({ 'success': False, 'error': str(e) }), 500
+
+@warehouse_bp.route('/orders/details', methods=['GET'])
+def get_order_details():
+    """Get order details by order number"""
+    try:
+        db = current_app.extensions['sqlalchemy']
+        order_number = request.args.get('orderNumber')
+        
+        if not order_number:
+            return jsonify({
+                'success': False,
+                'error': 'Order number is required'
+            }), 400        # Query to get order details
+        sql_query = text("""
+            SELECT 
+                Customers.Name AS customerName,
+                Main.Number,
+                Main.Desan,
+                Main.Color,
+                Main.Long2,
+                Main.Status,
+                Main.customerNumber,
+                Main.Customer,
+                Main.Date,
+                Main.Date4,
+                Main.endDate
+            FROM Main
+            JOIN Customers ON Main.customerNumber = Customers.Number
+            WHERE Customer = :order_number
+            ORDER BY Date DESC
+        """)
+        
+        result = db.session.execute(sql_query, {'order_number': order_number})
+        rows = result.fetchall()        # Convert rows to list of dictionaries
+        details = []
+        for row in rows:
+            detail = {
+                'customerName': row[0] if row[0] else 'غير معروف',  # Customers.Name
+                'Number': row[1] if row[1] else '',  # Main.Number
+                'Desan': row[2] if row[2] else '',   # Main.Desan
+                'Color': row[3] if row[3] else '',   # Main.Color
+                'Long2': str(row[4]) if row[4] else '0',  # Main.Long2
+                'Status': row[5] if row[5] else '',  # Main.Status
+                'customerNumber': str(row[6]) if row[6] else '',  # Main.customerNumber
+                'Customer': str(row[7]) if row[7] else '',  # Main.Customer
+                'Date': row[8].isoformat() if row[8] else None,   # Main.Date
+                'Date4': row[9].isoformat() if row[9] else None,  # Main.Date4
+                'endDate': row[10].isoformat() if row[10] else None  # Main.endDate
+            }
+            details.append(detail)
+        
+        return jsonify({
+            'success': True,
+            'data': details,
+            'order_number': order_number,
+            'count': len(details)
+        }), 200
+        
+    except Exception as e:
+        print(f"Error in get_order_details: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
