@@ -10,12 +10,19 @@ class Config:
     # It's crucial to set this in your environment for production.
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'a-super-secret-key-that-you-should-change'
 
-    # Database Configuration using pymssql for broad compatibility.
-    # For production, set DATABASE_URL in your hosting environment variables.
-    # For local development, you can create a .env file with:
-    # DATABASE_URL="mssql+pymssql://user:password@host/database"
+    # Database Configuration using pyodbc for broad compatibility.
+    # Individual database parameters for flexibility
+    DB_SERVER = os.environ.get('DB_SERVER', '104.247.167.18')
+    DB_USER = os.environ.get('DB_USER', 'almaestr_classic')
+    DB_PASSWORD = os.environ.get('DB_PASSWORD', 'Nooh1986.')
+    DB_NAME = os.environ.get('DB_NAME', 'almaestr_classic')
+    DB_INSTANCE = os.environ.get('DB_INSTANCE', 'MSSQLSERVER2014')
+    DB_DRIVER = os.environ.get('DB_DRIVER', 'ODBC Driver 17 for SQL Server')
+    
+    # Build connection string using pyodbc
+    # Format: mssql+pyodbc://user:password@server\instance/database?driver=ODBC+Driver+17+for+SQL+Server
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-                              'mssql+pymssql://almaestr_classic:Nooh1986.@104.247.167.18\\MSSQLSERVER2014/almaestr_classic'
+                              f"mssql+pyodbc://{DB_USER}:{DB_PASSWORD}@{DB_SERVER}\\{DB_INSTANCE}/{DB_NAME}?driver={DB_DRIVER.replace(' ', '+')}"
     
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = False  # Default to not logging SQL queries

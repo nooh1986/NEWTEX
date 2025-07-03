@@ -6,6 +6,4 @@ python-dotenv==1.0.0
 requests==2.31.0
 # SQL Server driver
 pyodbc==4.0.39
-# MySQL drivers (optional)
-mysql-connector-python==8.1.0
-pymysql==2.2.8
+
